@@ -34,9 +34,8 @@ def compute_pca(frame):
     np_frame = np.array(frame)
     score = pca.fit_transform(np_frame)
     reconstruction = pca.inverse_transform(score)
-    loss = ((np_frame - reconstruction) ** 2).mean()*len(reconstruction[0])
+    loss = ((np_frame -reconstruction) ** 2).sum(axis=1).mean() 
     return loss
-
 
 def graph_loss(data):
     data_df = pd.DataFrame(data)
@@ -52,7 +51,6 @@ b2_data, b2_labels = getDataAndLabels('cifar-10-batches-py/data_batch_2')
 b3_data, b3_labels = getDataAndLabels('cifar-10-batches-py/data_batch_3')
 b4_data, b4_labels = getDataAndLabels('cifar-10-batches-py/data_batch_4')
 b5_data, b5_labels = getDataAndLabels('cifar-10-batches-py/data_batch_5')
-b6_data, b6_labels = getDataAndLabels('cifar-10-batches-py/test_batch')
 
 data_combined = pd.concat([b1_data, b2_data, b3_data, b4_data, b5_data])
 labels_combined = pd.concat([b1_labels, b2_labels, b3_labels, b4_labels, b5_labels])
