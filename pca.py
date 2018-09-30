@@ -14,6 +14,8 @@ import numpy as np
 from sklearn.metrics import mean_squared_error
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
+from sklearn.metrics import euclidean_distances
+from sklearn.manifold import MDS
 
 def unpickle(file):
     import pickle
@@ -91,7 +93,38 @@ data.append(compute_pca(truck))
 
 graph_loss(data)
 
+XData=[None]*10
+XMean=[None]*10
 
+X=pd.DataFrame()
+Y=pd.DataFrame()
+
+X=pd.concat([X,b1_data,b2_data,b3_data,b4_data,b5_data])
+Y=pd.concat([Y,b1_labels,b2_labels,b3_labels,b4_labels,b5_labels])
+X['label'] = Y
+X_groups = X.groupby('label')
+
+for i in range(len(XData)):
+    thisData = X_groups.get_group(i)
+    XData[i]=thisData.drop('label', axis=1)
+    thisMean=XData[i].mean()
+    XMean[i] = thisMean.values.astype('uint8')
+
+print('part2 mean distance')
+meanD=euclidean_distances(X_mean)
+meanD_Df=pd.DataFrame(meanD)
+print(meanD_Df)
+display(meanD_Df)
+
+labels=['airplane','automobile','bird','cat','deer','dog','frog','horse','ship','truck']
+mds = MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=200, dissimilarity="precomputed", n_jobs=1)
+pos = mds.fit(meanD).embedding_
+plt.figure()
+plt.scatter(pos[:,0], pos[:,1])
+for i in range (0,10):
+    xy=(pos[i][0]+15,pos[i][1]+25)
+    plt.annotate(labels[i],xy)
+plt.show()
 
 
 
